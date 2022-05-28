@@ -27,8 +27,8 @@ This will:
 Notes:
 
     - Your CHANGELOG file needs an entry like this: #### N.N.N
-    - New changelog entries are inserted after that market
-    - Opening the file in your editor requires 'open'
+        - New changelog entries are inserted after that market
+    - Opening the file in your editor requires `open`
 
 
 ### Push your release
@@ -43,7 +43,7 @@ This will:
 
     - commit package.json and CHANGELOG
     - push the changes to origin
-    - create a Pull Request (if you have gh client installed)
+    - create a Pull Request (if `gh` is installed)
 
 ### Cleanup
 
