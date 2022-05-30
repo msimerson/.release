@@ -7,7 +7,7 @@ if branch_is_main; then
     exit
 fi
 
-assure_repo_is_clean #|| exit
+assure_repo_is_clean || exit
 
 REL_BRANCH=$(git branch --show-current)
 PKG_VERSION=$(node -e 'console.log(require("./package.json").version)')

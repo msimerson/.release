@@ -34,7 +34,7 @@ Notes:
 
 ### Push your release
 
-After editing your CHANGELOG and confirming all your changes:
+After making all your changes, editing your CHANGELOG and committing all your changes:
 
 ```sh
 .release/push.sh

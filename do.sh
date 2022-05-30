@@ -20,6 +20,7 @@ case "$1" in
 esac
 
 NEW_VERSION=$(npm --no-git-tag-version version "$1")
+BARE_VERSION=${NEW_VERSION//v}
 
 YMD=$(date "+%Y-%m-%d")
 # echo "Preparing $NEW_VERSION - $YMD"
@@ -32,7 +33,7 @@ update_changes() {
     cat << EO_CHANGE >> .release/new.txt
 
 
-### [${NEW_VERSION//v}] - $YMD
+### [$BARE_VERSION] - $YMD
 
 #### Added
 
@@ -56,19 +57,24 @@ EO_CHANGE
     echo "" >> .release/new.txt
 
     # insert contents of new.txt into CHANGELOG.md after marker
-    if head "$CHANGELOG" | grep -q Unreleased;
-        sed -i '' -e "/### Unreleased$/r .release/new.txt" "$CHANGELOG"
-    then
-        sed -i '' -e "/#### N.N.N.*$/r .release/new.txt" "$CHANGELOG"
+    if grep -qE "^#* $BARE_VERSION|^#* \[$BARE_VERSION\]" "$CHANGELOG"; then
+        echo "CHANGELOG entry for $BARE_VERSION exists"
+    else
+        if head "$CHANGELOG" | grep -q Unreleased;
+            sed -i '' -e "/### Unreleased$/r .release/new.txt" "$CHANGELOG"
+        then
+            sed -i '' -e "/#### N.N.N.*$/r .release/new.txt" "$CHANGELOG"
+        fi
+        rm .release/new.txt
     fi
-    rm .release/new.txt
 
-    if tail "$CHANGELOG" | grep -q "$NEW_VERSION";
-    then
+    if grep -q "^\[$BARE_VERSION\]:" "$CHANGELOG"; then
+        echo "CHANGELOG URL for $BARE_VERSION exists"
+    else
         # the VERSION (added above) is a markdown [URL]. Add the
         # release URL to the bottom of the file.
         REPO_URL=$(gh repo view --json url -q ".url")
-        echo "[$NEW_VERSION]: $REPO_URL/releases/tag/$NEW_VERSION" >> "$CHANGELOG"
+        echo "[$BARE_VERSION]: $REPO_URL/releases/tag/$BARE_VERSION" >> "$CHANGELOG"
     fi
 
     if command -v open; then open "$CHANGELOG"; fi
@@ -82,4 +88,4 @@ update_changes
 
 git add package.json
 git add "$CHANGELOG"
-git commit -m "bump version to $NEW_VERSION"
+git commit -m "bump version to $BARE_VERSION"
