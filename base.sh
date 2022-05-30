@@ -1,8 +1,21 @@
 #!/bin/sh
 
-branch_is_master()
+get_main_branch()
 {
-    if [ "$(git branch --show-current)" = "master" ]; then
+    MAIN_BRANCH="main"
+
+    if [ -z "$(git branch -l main)" ]; then
+        MAIN_BRANCH="master"
+    fi
+
+    export MAIN_BRANCH
+}
+
+branch_is_main()
+{
+    get_main_branch
+
+    if [ "$(git branch --show-current)" = "$MAIN_BRANCH" ]; then
         return 0
     fi
 
