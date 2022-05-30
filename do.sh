@@ -88,4 +88,3 @@ update_changes
 
 git add package.json
 git add "$CHANGELOG"
-git commit -m "bump version to $BARE_VERSION"
