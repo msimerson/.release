@@ -14,15 +14,15 @@ git submodule add https://github.com/msimerson/.release
 ### Start a release
 
 ```sh
-.release/do.sh [ major | minor | patch ]
+.release/start.sh [ major | minor | patch ]
 ```
 
 This will:
 
-- create a branch named release-vN.N.N
+- create a branch named release-N.N.N
 - bump the version number in package.json
-- add an entry to CHANGE*.md with the version number and today's date
-- open the file in your chosen markdown editor
+- add a versioned entry to CHANGELOG with today's date
+- open CHANGELOG in your markdown editor
 
 Notes:
 
@@ -32,32 +32,35 @@ Notes:
 
 ----
 
-### Push your release
+### Submit your release
 
-After making all your changes, editing your CHANGELOG and committing all your changes:
+After making all your changes, editing your CHANGELOG, and committing all your changes:
 
 ```sh
-.release/push.sh
+.release/submit.sh
 ```
 
 This will:
 
-    - push the changes to origin
-    - create a Pull Request (if `gh` is installed)
+- push the changes to origin/$branch
+- if `gh` is installed:
+    - create a draft Pull Request 
     - create a draft Release
 
 ----
 
-### Cleanup
+### Finish
 
-After your PR is merged, cleanup the feature branch with:
+After your PR is merged, finish it:
 
 ```sh
-.release/cleanup.sh
+.release/finish.sh
 ```
 
 This will:
 
+- if `gh` is installed:
+    - publish the release
 - switch to the main branch
-- delete the feature branch
+- delete the release branch
 - pull changes from origin
