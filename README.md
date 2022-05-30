@@ -19,42 +19,45 @@ git submodule add https://github.com/msimerson/.release
 
 This will:
 
-    - create a branch named release-vN.N.N
-    - bump the version number in package.json
-    - add an entry to CHANGE*.md with the version number and today's date
-    - open the file in your chosen markdown editor
+- create a branch named release-vN.N.N
+- bump the version number in package.json
+- add an entry to CHANGE*.md with the version number and today's date
+- open the file in your chosen markdown editor
 
 Notes:
 
-    - Your CHANGELOG file needs an entry like this: #### N.N.N
-        - New changelog entries are inserted after that market
-    - Opening the file in your editor requires `open`
+- Your CHANGELOG file needs an entry like this: ### Unreleased
+    - New changelog entries are inserted after that marker
+- Opening the file in your editor requires `open`
 
+----
 
 ### Push your release
 
 After editing your CHANGELOG and confirming all your changes:
 
-```js
+```sh
 .release/push.sh
 ```
 
 This will:
 
-    - commit package.json and CHANGELOG
     - push the changes to origin
     - create a Pull Request (if `gh` is installed)
+    - create a draft Release
+
+----
 
 ### Cleanup
 
 After your PR is merged, cleanup the feature branch with:
 
-```js
+```sh
 .release/cleanup.sh
 ```
 
 This will:
 
-    - switch to the master branch
-    - delete the feature branch
-    - pull changes from origin
+- switch to the main branch
+- delete the feature branch
+- pull changes from origin
