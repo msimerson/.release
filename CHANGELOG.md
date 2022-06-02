@@ -2,6 +2,11 @@
 
 ### Unreleased
 
+- feat: add npm/prepend-scope.js
+
+
+### 2.0.0 - 2022-05-31
+
 - feat: permit main branch to be 'main', was 'master'
 - feat: auto-insert commit messages since last tag into CHANGELOG
 - feat: create PR automatically
@@ -12,6 +17,7 @@
 - doc(CHANGELOG.md): added
 - doc(CH): only add bits when missing
 - doc(README): fix, code fences should be sh
+
 
 ### 1.0.0 - 2022-05-29
 
