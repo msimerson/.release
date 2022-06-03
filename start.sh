@@ -78,14 +78,14 @@ add_release_link() {
 }
 
 update_changes() {
-    write_template
-    add_commit_messages
-    echo "" >> .release/new.txt
-
     # insert contents of new.txt into CHANGELOG.md after marker
     if grep -qE "^#* $NEW_VERSION|^#* \[$NEW_VERSION\]" "$CHANGELOG"; then
         echo "CHANGELOG entry for $NEW_VERSION exists"
     else
+		write_template
+		add_commit_messages
+		echo "" >> .release/new.txt
+
         if head "$CHANGELOG" | grep -q Unreleased;
             sed -i '' -e "/### Unreleased$/r .release/new.txt" "$CHANGELOG"
         then
@@ -98,7 +98,7 @@ update_changes() {
     if command -v open; then open "$CHANGELOG"; fi
 
     echo
-    echo "AFTER editing $CHANGELOG, run: .release/push.sh"
+    echo "AFTER editing $CHANGELOG, run: .release/submit.sh"
 }
 
 find_new_version "$@"
