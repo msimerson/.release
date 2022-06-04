@@ -8,7 +8,7 @@ git release scripts
 In your github repo:
 
 ```sh
-git submodule add https://github.com/msimerson/.release
+git submodule add git@github.com:msimerson/.release.git
 ```
 
 ### Start a release
