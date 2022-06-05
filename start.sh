@@ -107,6 +107,10 @@ YMD=$(date "+%Y-%m-%d")
 # echo "Preparing $NEW_VERSION - $YMD"
 
 if branch_is_main; then
+    if [ -z "$(git status --porcelain)" ]; then
+        # working directory is clean, bring it up-to-date
+        git pull
+    fi
     git checkout -b "release-${NEW_VERSION}"
 fi
 
@@ -115,3 +119,6 @@ update_changes
 
 git add package.json
 git add "$CHANGELOG"
+
+# update .release submodule, but leave it to author to review/check in
+cd .release && git pull && cd ..
