@@ -22,7 +22,7 @@ if command -v gh; then
     gh pr create -d --title "Release v$PKG_VERSION" --body="$GIT_NOTES"
 
     if [ "$LAST_TAG" != "" ]; then
-        # GitHub Actions require the v prefix in the title
-        gh release create "$PKG_VERSION" --draft --target "$MAIN_BRANCH" --title "v$PKG_VERSION" --notes "$GIT_URL_NOTES"
+		# GitHub Actions requires the v prefix in the tag
+        gh release create "v$PKG_VERSION" --draft --target "$MAIN_BRANCH" --title "$PKG_VERSION" --notes "$GIT_URL_NOTES"
     fi
 fi
