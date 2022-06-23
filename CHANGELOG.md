@@ -2,7 +2,11 @@
 
 ### Unreleased
 
-- feat: add npm/prepend-scope.js
+### 2.1.0 - 2022-06-23
+
+- feat: add npm/prepend-scope.cjs
+- feat(submit): prepend release tags with v, GHA requires it
+- doc: change submodule URL from http to ssh
 
 
 ### 2.0.0 - 2022-05-31
