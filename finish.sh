@@ -8,7 +8,7 @@ get_main_branch
 
 if command -v gh; then
     PKG_VERSION=$(node -e 'console.log(require("./package.json").version)')
-    gh release edit "$PKG_VERSION" --draft=false
+    gh release edit "v$PKG_VERSION" --draft=false
 fi
 
 if [ "$CURRENT_BRANCH" != "$MAIN_BRANCH" ];
