@@ -47,6 +47,8 @@ This will:
     - create a draft Pull Request 
     - create a draft Release
 
+The body of the PR and the Release will be the commit messages in your repo since the most recent tag.
+
 ----
 
 ### Finish
