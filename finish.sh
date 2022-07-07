@@ -13,6 +13,9 @@ fi
 
 if [ "$CURRENT_BRANCH" != "$MAIN_BRANCH" ];
 then
+    # TODO, maybe: delete remote branch
+    # git push origin ":$CURRENT_BRANCH"
+
     git checkout "$MAIN_BRANCH"
     git branch -d "$CURRENT_BRANCH"
     git pull
