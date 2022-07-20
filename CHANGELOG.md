@@ -20,7 +20,7 @@
     - before: do, push, clean. after: start, submit, finish
 - doc(CHANGELOG.md): added
 - doc(CH): only add bits when missing
-- doc(README): fix, code fences should be sh
+- doc(README): code fences should be sh
 
 
 ### 1.0.0 - 2022-05-29
