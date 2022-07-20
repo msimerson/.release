@@ -11,6 +11,12 @@ In your github repo:
 git submodule add git@github.com:msimerson/.release.git
 ```
 
+In newly checked out repos where .release exists, checkout the submodule with:
+
+```sh
+git submodule update --init --recursive
+```
+
 ### Start a release
 
 ```sh
