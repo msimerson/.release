@@ -1,7 +1,6 @@
 # .release
 
-git release scripts
-
+git release scripts for NPM modules
 
 ## USAGE
 
@@ -20,7 +19,7 @@ git submodule update --init --recursive
 ### Start a release
 
 ```sh
-.release/start.sh [ major | minor | patch ]
+.release/start.sh [ major | minor | patch | prerelease ]
 ```
 
 This will:
@@ -33,10 +32,10 @@ This will:
 Notes:
 
 - Your CHANGELOG file needs an entry like this: ### Unreleased
-    - New changelog entries are inserted after that marker
+  - New changelog entries are inserted after that marker
 - Opening the file in your editor requires `open`
 
-----
+---
 
 ### Submit your release
 
@@ -48,14 +47,17 @@ After making all your changes, editing your CHANGELOG, and committing all your c
 
 This will:
 
+- when defined in package.json[scripts]
+  - run `npm run lint`
+  - run `npm run format`
 - push the changes to origin/$branch
 - if `gh` is installed:
-    - create a draft Pull Request 
-    - create a draft Release
+  - create a draft Pull Request
+  - create a draft Release
 
 The body of the PR and the Release will be the commit messages in your repo since the most recent tag.
 
-----
+---
 
 ### Finish
 
@@ -68,7 +70,7 @@ After your PR is merged, finish it:
 This will:
 
 - if `gh` is installed:
-    - publish the release
+  - publish the release
 - switch to the main branch
 - delete the release branch
 - pull changes from origin
