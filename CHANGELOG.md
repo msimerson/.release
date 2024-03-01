@@ -2,6 +2,13 @@
 
 ### Unreleased
 
+### 2.2.0 - 2024-02-29
+
+- feat: support pre-release versions
+- feat(finish): delete remote branch
+- doc(README): add submodule checkout instructions
+
+
 ### 2.1.0 - 2022-06-23
 
 - feat: add npm/prepend-scope.cjs

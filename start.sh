@@ -1,7 +1,7 @@
 #!/bin/sh
 
 usage() {
-    echo "start.sh {major | minor | patch}"
+    echo "start.sh { major | minor | patch | prerelease }"
     exit
 }
 
@@ -11,12 +11,10 @@ find_new_version() {
     if ! git branch --show-current | grep -q ^release;
     then
         case "$1" in
-            "major" )
-            ;;
-            "minor" )
-            ;;
-            "patch" )
-            ;;
+            "major" ) ;;
+            "minor" ) ;;
+            "patch" ) ;;
+            "prerelease" ) ;;
             *)
             usage
             ;;
