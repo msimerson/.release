@@ -119,4 +119,4 @@ git add package.json
 git add "$CHANGELOG"
 
 # update .release submodule, but leave it to author to review/check in
-cd .release && git pull && cd ..
+cd .release && git pull origin main && cd ..
