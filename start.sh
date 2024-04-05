@@ -99,6 +99,26 @@ update_changes() {
     echo "AFTER editing $CHANGELOG, run: .release/submit.sh"
 }
 
+constrain_publish() {
+    # many modules have a .npmignore (one more file) to reduce/limit what
+    # gets published. Instead...
+    if [ -f .npmignore ]; then
+        echo "CONSIDER: instead of maintaining .npmignore, add the much shorter list of"
+        echo "          files that should be published to [files] in package.json."
+        echo
+        echo "   https://docs.npmjs.com/cli/v10/configuring-npm/package-json#files"
+        echo
+        echo "the current contents of [files] in package.json:"
+        echo
+        node -e 'console.log(require("./package.json").files)'
+    fi
+
+    # local _main; _main=$(node -e 'console.log(require("./package.json").main)')
+    # if [ "$_main" = "undefined" ] && [ ! -f index.js ]; then
+    #     echo ""
+    # fi
+}
+
 find_new_version "$@"
 
 YMD=$(date "+%Y-%m-%d")
@@ -114,9 +134,10 @@ fi
 
 find_changelog
 update_changes
+constrain_publish
 
 git add package.json
 git add "$CHANGELOG"
 
 # update .release submodule, but leave it to author to review/check in
-cd .release && git pull origin main && cd ..
+cd .release && git checkout main && git pull origin main && cd ..

@@ -48,6 +48,24 @@ assure_repo_is_clean()
 find_changelog()
 {
     CHANGELOG=$(ls [Cc][Hh][Aa]*.md)
-    export CHANGELOG
     #echo "I found your CHANGELOG at: $CHANGELOG"
+    if [ "$CHANGELOG" != "CHANGELOG.md" ]; then
+        echo "REF: https://keepachangelog.com/"
+        echo "please consider: git mv $CHANGELOG CHANGELOG.md"
+    fi
+    export CHANGELOG
+
+    if ! grep -qi '# Changelog' "$CHANGELOG"; then
+        echo "inserting: # Changelog"
+        sed -i '' \
+            -e '1s|^|# Changelog\n\nThe format is based on [Keep a Changelog](https://keepachangelog.com/).\n\n|' \
+            "$CHANGELOG"
+    fi
+
+    if ! grep -q '# Unreleased' "$CHANGELOG"; then
+        echo "inserting: ### Unreleased"
+        sed -i '' \
+            -e '1,/##/ s/##/### Unreleased\n\n##/' \
+            "$CHANGELOG"
+    fi
 }

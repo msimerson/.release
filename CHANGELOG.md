@@ -2,6 +2,14 @@
 
 ### Unreleased
 
+### 2.2.2 - 2024-04-05
+
+- find_changelog
+  - if file not named CHANGELOG, suggest rename
+  - if # changelog missing, add it
+  - if ### Unreleased is missing, add it
+- start: add constrain_publish
+
 ### 2.2.1 - 2024-03-06
 
 - feat(submit): run lint & formatting
