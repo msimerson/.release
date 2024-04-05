@@ -71,7 +71,7 @@ add_release_link() {
         # the VERSION (added above) is a markdown [URL]. Add the
         # release URL to the bottom of the file.
         REPO_URL=$(gh repo view --json url -q ".url")
-        echo "[$NEW_VERSION]: $REPO_URL/releases/tag/$NEW_VERSION" >> "$CHANGELOG"
+        echo "[$NEW_VERSION]: $REPO_URL/releases/tag/v$NEW_VERSION" >> "$CHANGELOG"
     fi
 }
 
