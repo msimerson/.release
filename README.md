@@ -16,6 +16,19 @@ In newly checked out repos where .release exists, checkout the submodule with:
 git submodule update --init --recursive
 ```
 
+For each release, run 3 commands:
+
+```sh
+.release/start.sh [ major | minor | patch | prerelease ]
+# do local coding & commit changes
+.release/submit.sh
+# submit the changes, create PR, see if CI tests pass
+.release/finish.sh
+# cleanup
+```
+
+---
+
 ### Start a release
 
 ```sh
@@ -27,13 +40,7 @@ This will:
 - create a branch named release-N.N.N
 - bump the version number in package.json
 - add a versioned entry to CHANGELOG with today's date
-- open CHANGELOG in your markdown editor
-
-Notes:
-
-- Your CHANGELOG file needs an entry like this: ### Unreleased
-  - New changelog entries are inserted after that marker
-- Opening the file in your editor requires `open`
+- open CHANGELOG in your markdown editor (if `open` exists)
 
 ---
 

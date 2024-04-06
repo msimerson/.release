@@ -1,5 +1,19 @@
 #!/bin/sh
 
+get_yes_or_no()
+{
+    printf "%s (y/n)? " "$1"
+    old_stty_cfg=$(stty -g)
+    stty raw -echo
+    answer=$( while ! head -c 1 | grep -i '[ny]' ;do true ;done )
+    stty "$old_stty_cfg"
+    if [ "$answer" != "${answer#[Yy]}" ];then
+        return 0 # yes
+    else
+        return 1 # no
+    fi
+}
+
 get_main_branch()
 {
     MAIN_BRANCH="main"
@@ -54,18 +68,4 @@ find_changelog()
         echo "please consider: git mv $CHANGELOG CHANGELOG.md"
     fi
     export CHANGELOG
-
-    if ! grep -qi '# Changelog' "$CHANGELOG"; then
-        echo "inserting: # Changelog"
-        sed -i '' \
-            -e '1s|^|# Changelog\n\nThe format is based on [Keep a Changelog](https://keepachangelog.com/).\n\n|' \
-            "$CHANGELOG"
-    fi
-
-    if ! grep -q '# Unreleased' "$CHANGELOG"; then
-        echo "inserting: ### Unreleased"
-        sed -i '' \
-            -e '1,/##/ s/##/### Unreleased\n\n##/' \
-            "$CHANGELOG"
-    fi
 }

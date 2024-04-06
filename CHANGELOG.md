@@ -2,6 +2,15 @@
 
 ### Unreleased
 
+### 2.2.3 - 2024-04-06
+
+- add start.self_update()
+- added base.get_yes_or_no()
+- start: include commit body in changelog entry
+- add start.changelog_check_tag_urls()
+- submit: run format & lint targets, if present
+- submit: check for deprecated eslint rules
+
 ### 2.2.2 - 2024-04-05
 
 - find_changelog
