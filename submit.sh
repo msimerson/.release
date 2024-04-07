@@ -41,7 +41,7 @@ REL_BRANCH=$(git branch --show-current)
 PKG_VERSION=$(node -e 'console.log(require("./package.json").version)')
 LAST_TAG=$(git describe --tags --abbrev=0)
 REPO_URL=$(gh repo view --json url -q ".url")
-GIT_NOTES=$(git log --pretty=format:"- %s" "$LAST_TAG..HEAD")
+GIT_NOTES=$(git log --pretty=format:"- %s%n%b" "$LAST_TAG..HEAD")
 GIT_URL_NOTES=$(git log --pretty=format:"- [%h]($REPO_URL/commit/%h) %s" "$LAST_TAG..HEAD")
 
 git push --set-upstream origin "$REL_BRANCH" || exit 1
