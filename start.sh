@@ -165,13 +165,11 @@ self_update()
             git checkout main
         fi
 
-        _pull=$(git pull origin main)
+        git pull origin main -q
     )
 
-    if [ "$_pull" != "Already up to date." ]; then
-        git add .release
-        . .release/base.sh
-    fi
+    git add .release
+    . .release/base.sh
 }
 
 self_update
