@@ -14,6 +14,17 @@ get_yes_or_no()
     fi
 }
 
+release_get_choice()
+{
+    while true; do
+        read -p 'Select option: ' n
+        for _i in $@; do
+            if [ "$_i" = "$n" ]; then break 2; fi
+        done
+    done
+    printf "%s\n" $n
+}
+
 get_main_branch()
 {
     MAIN_BRANCH="main"

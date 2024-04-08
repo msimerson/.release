@@ -8,9 +8,23 @@ usage() {
 . .release/base.sh || exit 1
 
 find_new_version() {
-    if ! git branch --show-current | grep -q ^release;
+    local _semver=${1:-""}
+
+    if git branch --show-current | grep -q ^release;
     then
-        case "$1" in
+        if [ -f package.json ]; then
+            NEW_VERSION=$(node -e 'console.log(require("./package.json").version)')
+        fi
+    else
+
+        if [ -z "$_semver" ]; then
+            set -- major minor patch prerelease
+            printf 'Choose a semver release type: (https://semver.org)\n\n'
+            printf '\t%s\n' $@; echo
+            _semver=$(release_get_choice $@)
+        fi
+
+        case "$_semver" in
             "major" ) ;;
             "minor" ) ;;
             "patch" ) ;;
@@ -20,12 +34,8 @@ find_new_version() {
             ;;
         esac
 
-        NEW_VERSION=$(npm --no-git-tag-version version "$1")
+        NEW_VERSION=$(npm --no-git-tag-version version "$_semver")
         NEW_VERSION=${NEW_VERSION//v}
-    else
-        if [ -f package.json ]; then
-            NEW_VERSION=$(node -e 'console.log(require("./package.json").version)')
-        fi
     fi
 
     if [ -z "$NEW_VERSION" ]; then
