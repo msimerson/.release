@@ -80,3 +80,11 @@ find_changelog()
     fi
     export CHANGELOG
 }
+
+file_has_changes()
+{
+    if git diff -s --exit-code "$1"; then
+        return 1
+    fi
+    return 0
+}

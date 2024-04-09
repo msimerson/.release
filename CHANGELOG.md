@@ -2,6 +2,9 @@
 
 ### Unreleased
 
+- submit: halt for deprecated eslint rules
+- add contributors.js (requires gh, node, & jq)
+
 ### 2.2.3 - 2024-04-06
 
 - add start.self_update()

@@ -166,6 +166,22 @@ constrain_publish() {
     fi
 }
 
+contributors_update() {
+    if ! jq .files package.json | grep -q CONTRIBUTORS; then
+        jq '.files += ["CONTRIBUTORS.md"]' package.json > tmp || exit 1
+        mv tmp package.json
+        git add package.json
+        git commit -m 'add CONTRIBUTORS to [files] in package.json'
+    fi
+
+    node .release/contributors.js
+
+    if file_has_changes CONTRIBUTORS.md; then
+        git add CONTRIBUTORS.md
+        git commit -m 'doc(CONTRIBUTORS): updated'
+    fi
+}
+
 self_update()
 {
     (
@@ -202,6 +218,7 @@ changelog_add_header
 changelog_add_release_template
 changelog_check_tag_urls
 constrain_publish
+contributors_update
 
 git add package.json
 git add "$CHANGELOG"
