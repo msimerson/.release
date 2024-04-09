@@ -167,12 +167,13 @@ constrain_publish() {
 }
 
 contributors_update() {
-    if ! jq .files package.json | grep -q CONTRIBUTORS; then
-        jq '.files += ["CONTRIBUTORS.md"]' package.json > tmp || exit 1
-        mv tmp package.json
-        git add package.json
-        git commit -m 'add CONTRIBUTORS to [files] in package.json'
-    fi
+    # never mind, NPM site doesn't render it
+    #if ! jq .files package.json | grep -q CONTRIBUTORS; then
+    #    jq '.files += ["CONTRIBUTORS.md"]' package.json > tmp || exit 1
+    #    mv tmp package.json
+    #    git add package.json
+    #    git commit -m 'add CONTRIBUTORS to [files] in package.json'
+    #fi
 
     if [ ! -f CONTRIBUTORS.md ]; then
         node .release/contributors.js
