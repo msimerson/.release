@@ -174,6 +174,13 @@ contributors_update() {
         git commit -m 'add CONTRIBUTORS to [files] in package.json'
     fi
 
+    if [ ! -f CONTRIBUTORS.md ]; then
+        node .release/contributors.js
+        git add CONTRIBUTORS.md
+        git commit -m 'doc(CONTRIBUTORS): added'
+        return
+    fi
+
     node .release/contributors.js
 
     if file_has_changes CONTRIBUTORS.md; then
