@@ -49,7 +49,7 @@ const lines = []
 let row = ``
 let count = 0
 for (contrib of contributors) {
-  row += `| <img height="80" src="${contrib.avatar_url}"><br><a href="${contrib.html_url}">${contrib.login}</a> (<a href="https://github.com/haraka/haraka-plugin-access/commits?author=${contrib.login}">${contrib.contributions}</a>)`
+  row += `| <img height="80" src="${contrib.avatar_url}"><br><a href="${contrib.html_url}">${contrib.login}</a> (<a href="https://github.com/${repoInfo}/commits?author=${contrib.login}">${contrib.contributions}</a>)`
   count++
   if (count % columns === 0) {
     row += `|`
