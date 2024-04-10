@@ -66,8 +66,7 @@ if (row !== '') lines.push(row)
 
 fs.writeFileSync(
   'CONTRIBUTORS.md',
-  `
-# Contributors
+  `# Contributors
 
 This handcrafted artisinal software is brought to you by:
 
