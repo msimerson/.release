@@ -45,7 +45,7 @@ find_new_version() {
 }
 
 write_template() {
-    cat <<EO_CHANGE > .release/new.txt
+    cat > .release/new.txt <<EO_CHANGE
 
 ### [$NEW_VERSION] - $YMD
 
@@ -64,6 +64,12 @@ EO_CHANGE
 }
 
 add_commit_messages() {
+
+    # no tags (yet)
+    if [ -z "$(git tag)" ]; then
+        git log --pretty=format:"- %s%n%b" >> .release/new.txt
+        return
+    fi
 
     LAST_TAG=$(git describe --tags --abbrev=0)
     if [ "$LAST_TAG" != "" ]; then
@@ -138,7 +144,7 @@ changelog_check_tag_urls()
             else
                 echo "INVALID URI in CHANGELOG"
                 grep -F "[$_ver]:" "$CHANGELOG"
-                echo " ----- should be ------"
+                echo "      ----- should be ------"
                 echo "$_ver_uri"
                 echo
             fi
@@ -148,9 +154,9 @@ changelog_check_tag_urls()
 }
 
 constrain_publish() {
-    local _main; _main=$(node -e 'console.log(require("./package.json").main)')
-    if [ "$_main" = "undefined" ]; then
-        echo "CONSIDER: package.json has no [main] section. You can likely reduce"
+    local _files; _files=$(node -e 'console.log(require("./package.json").files)')
+    if [ "$_files" = "undefined" ]; then
+        echo "CONSIDER: package.json has no [files] section. You can likely reduce"
         echo "          the published package size by populating it."
         echo
         echo "   https://docs.npmjs.com/cli/v10/configuring-npm/package-json#files"
