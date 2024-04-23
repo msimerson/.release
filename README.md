@@ -55,8 +55,9 @@ After making all your changes, editing your CHANGELOG, and committing all your c
 This will:
 
 - when defined in package.json[scripts]
-  - run `npm run lint`
-  - run `npm run format`
+  - run "format" (think: autopilot mode)
+    - example: "format": "npm run prettier:fix && npm run lint:fix && git add . && git commit -m format",
+  - when format not defined, run `npm run format:check` && `npm run lint` (check only)
 - push the changes to origin/$branch
 - if `gh` is installed:
   - create a draft Pull Request
@@ -79,5 +80,5 @@ This will:
 - if `gh` is installed:
   - publish the release
 - switch to the main branch
-- delete the release branch
 - pull changes from origin
+- delete the release branch

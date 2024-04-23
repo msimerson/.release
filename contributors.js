@@ -14,6 +14,7 @@ if (repoInfoRaw.stderr.length) {
   process.exit(1)
 }
 
+// example: msimerson/.release
 const repoInfo = repoInfoRaw.stdout.toString().trim()
 
 const contributorsRaw = child.spawnSync('gh', [
@@ -35,15 +36,18 @@ const exclude = [
   'synk',
   'dependabot',
   'dependabot[bot]',
+  'lgtm-com[bot]',
 ]
 
+// list of contributors, minus the bots
 const contributors = JSON.parse(contributorsRaw.stdout.toString()).filter(
   (c) => !exclude.includes(c.login),
 )
 
-const columns = contributors.length < 7 ? contributors.length : 7
-const blankRow = '| '.repeat(columns) + '|'
-const seperatorRow = '| :---: '.repeat(columns) + '|'
+// generate the GFM markdown table
+const columnsWide = contributors.length < 7 ? contributors.length : 7
+const blankRow = '| '.repeat(columnsWide) + '|'
+const seperatorRow = '| :---: '.repeat(columnsWide) + '|'
 
 const lines = []
 let row = ``
@@ -51,7 +55,7 @@ let count = 0
 for (contrib of contributors) {
   row += `| <img height="80" src="${contrib.avatar_url}"><br><a href="${contrib.html_url}">${contrib.login}</a> (<a href="https://github.com/${repoInfo}/commits?author=${contrib.login}">${contrib.contributions}</a>)`
   count++
-  if (count % columns === 0) {
+  if (count % columnsWide === 0) {
     row += `|`
     lines.push(row)
     if (lines.length === 1) lines.push(seperatorRow)

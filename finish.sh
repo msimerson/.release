@@ -21,6 +21,6 @@ then
     fi
 
     git checkout "$MAIN_BRANCH"
-    git branch -d "$CURRENT_BRANCH"
     git pull
+    git branch -d "$CURRENT_BRANCH"
 fi

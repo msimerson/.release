@@ -17,22 +17,33 @@ for _dep in array-bracket-newline array-bracket-spacing array-element-newline ar
     fi
 done
 
-_format=$(node -e 'console.log(require("./package.json").scripts?.format)')
-if [ "$_format" != "undefined" ]; then
-    if ! npm run format; then
-        exit 1
-    fi
-fi
+if [ "$(node -e 'console.log(require("./package.json").scripts)')" != "undefined" ]; then
 
-_lint=$(node -e 'console.log(require("./package.json").scripts?.lint)')
-if [ "$_format" = "undefined" ] && [ "$_lint" != "undefined" ]; then
-    if ! npm run lint; then
-        if get_yes_or_no "Shall I try to fix?"; then
-            if npm run lint:fix; then
-                git add .
-                git commit -m 'lint: autofix'
-            else
+    _format=$(node -e 'console.log(require("./package.json").scripts.format)')
+    if [ "$_format" != "undefined" ]; then
+        if ! npm run format; then
+            exit 1
+        fi
+        git add . && git commit -m 'chore: format'
+    else
+        _format_check=$(node -e 'console.log(require("./package.json").scripts["format:check"])')
+        if [ "$_format_check" != "undefined" ]; then
+            if ! npm run format:check; then
                 exit 1
+            fi
+        fi
+
+        _lint=$(node -e 'console.log(require("./package.json").scripts?.lint)')
+        if [ "$_lint" != "undefined" ]; then
+            if ! npm run lint; then
+                if get_yes_or_no "Shall I try to fix?"; then
+                    if npm run lint:fix; then
+                        git add .
+                        git commit -m 'lint: autofix'
+                    else
+                        exit 1
+                    fi
+                fi
             fi
         fi
     fi
@@ -51,7 +62,7 @@ if command -v gh; then
     gh pr create -d --title "Release v$PKG_VERSION" --body="$GIT_NOTES"
 
     if [ "$LAST_TAG" != "" ]; then
-		# GitHub Actions requires the v prefix in the tag
+        # GitHub Actions requires the v prefix in the tag
         gh release create "v$PKG_VERSION" --draft --target "$MAIN_BRANCH" --title "$PKG_VERSION" --notes "$GIT_URL_NOTES"
     fi
 fi
