@@ -34,6 +34,7 @@ const exclude = [
   'greenkeeper',
   'greenkeeper[bot]',
   'synk',
+  'snyk-bot',
   'dependabot',
   'dependabot[bot]',
   'lgtm-com[bot]',
