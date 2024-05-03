@@ -18,9 +18,16 @@ then
     _state=$(gh pr view "$CURRENT_BRANCH" | grep -i state | awk '{ print $2 }')
     if [ "$_state" = "MERGED" ]; then
         git push origin ":$CURRENT_BRANCH"
+        BRANCH_DEL="-D"
+
+        # update the release notes with the PR body
+        PR_BODY="$(gh pr view --json body --jq .body)"
+        if [ -n "$PR_BODY" ]; then
+            gh release edit "v$PKG_VERSION" --notes "$PR_BODY"
+        fi
     fi
 
     git checkout "$MAIN_BRANCH"
     git pull
-    git branch -d "$CURRENT_BRANCH"
+    git branch "${BRANCH_DEL:='-d'}" "$CURRENT_BRANCH"
 fi
