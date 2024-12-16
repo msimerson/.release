@@ -2,6 +2,15 @@
 
 git release scripts for NPM modules
 
+## DESCRIPTION
+
+BASH release scripts for NPM modules hosted on GitHub. The scripts automate away much of the tedium of cutting releases while:
+
+- leaving the author(s) in complete control
+- maintaining a very high signal to noise ratio
+
+Cutting a release is split into three steps: start, submit, and finish. Each step is documented below and is independent, permitting authors to use only the steps that fit their workflow.
+
 ## USAGE
 
 In your github repo:
