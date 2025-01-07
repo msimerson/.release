@@ -37,7 +37,9 @@ const exclude = [
   'snyk-bot',
   'dependabot',
   'dependabot[bot]',
+  'lgtm-com',
   'lgtm-com[bot]',
+  'lgtm-migrator',
 ]
 
 // list of contributors, minus the bots
