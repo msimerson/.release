@@ -30,7 +30,7 @@ for (const s of ['lint', 'lint:fix']) {
   }
 }
 
-if (!node.env.SKIP_PRETTIER) {
+if (!process.env.SKIP_PRETTIER) {
   if (!pkg.prettier) {
     pkg.prettier = {
       "singleQuote": true,
