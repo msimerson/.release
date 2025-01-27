@@ -211,7 +211,7 @@ upgrade_eslint9() {
         git commit -m 'dep(eslint): upgrade to v9'
     fi
 
-    if grep -q eslint-8 .codeclimate.yml; then
+    if grep -qs eslint-8 .codeclimate.yml; then
         sed -i '' \
             -e 's/eslint-8/eslint-9/' \
             -e 's/\.eslintrc.yaml/eslint.config.mjs/' \
