@@ -58,3 +58,5 @@ if (!pkg.scripts.versions) {
 if (!pkg.scripts['versions:fix']) {
   pkg.scripts['versions:fix'] = 'npx dependency-version-checker update'
 }
+
+fs.writeFileSync('package.json', JSON.stringify(pkg, null, 2))
