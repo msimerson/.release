@@ -2,6 +2,10 @@
 
 ### Unreleased
 
+### 2.3.0 - 2025-01-26
+
+- added js/standards.cjs
+  - populates package.json[scripts] and applies common updates
 - submit: halt for deprecated eslint rules
 - add contributors.js (requires gh, node, & jq)
 

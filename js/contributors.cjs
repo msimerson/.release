@@ -1,5 +1,5 @@
 const child = require('node:child_process')
-const fs = require('fs')
+const fs = require('node:fs')
 
 const repoInfoRaw = child.spawnSync('gh', [
   'repo',

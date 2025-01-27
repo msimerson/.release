@@ -1,5 +1,5 @@
 #!node
-const fs = require('fs')
+const fs = require('node:fs')
 function usage() {
   console.log(`${process.argv[1]} <scope>`)
   process.exit(1)

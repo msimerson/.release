@@ -161,6 +161,7 @@ constrain_publish() {
         echo
         echo "   https://docs.npmjs.com/cli/v10/configuring-npm/package-json#files"
         echo
+        echo "HINT: files = [ 'CHANGELOG.md', 'config' ]"
     fi
 
     # many modules have a .npmignore (one more file) to reduce/limit what
@@ -182,18 +183,48 @@ contributors_update() {
     #fi
 
     if [ ! -f CONTRIBUTORS.md ]; then
-        node .release/contributors.js
+        node .release/js/contributors.cjs
         git add CONTRIBUTORS.md
         git commit -m 'doc(CONTRIBUTORS): added'
         return
     fi
 
-    node .release/contributors.js
+    node .release/js/contributors.cjs
 
     if file_has_changes CONTRIBUTORS.md; then
         git add CONTRIBUTORS.md
         git commit -m 'doc(CONTRIBUTORS): updated'
     fi
+}
+
+upgrade_eslint9() {
+
+    _eslint8=".eslintrc.yaml"
+    if [ ! -f "$_eslint8" ]; then
+        _eslint8=".eslintrc.json"
+    fi
+
+    if [ -f "$_eslint8" ]; then
+        npx @eslint/migrate-config "$_eslint8"
+        git rm "$_eslint8"
+        git add eslint.config.mjs
+        git commit -m 'dep(eslint): upgrade to v9'
+    fi
+
+    if grep -q eslint-8 .codeclimate.yml; then
+        sed -i '' \
+            -e 's/eslint-8/eslint-9/' \
+            -e 's/\.eslintrc.yaml/eslint.config.mjs/' \
+            -e 's/\.eslintrc.json/eslint.config.mjs/' \
+            .codeclimate.yml
+    fi
+
+    # eslint 9 deprecated code formatting features, prettier is the
+    # de facto tool now, and we store the config in package.json
+    if [ -f .prettierrc ];     then git rm .prettierrc; fi
+    if [ -f .prettierrc.yml ]; then git rm .prettierrc.yml; fi
+
+    node .release/js/standards.cjs
 }
 
 self_update()
@@ -233,6 +264,7 @@ changelog_add_release_template
 changelog_check_tag_urls
 constrain_publish
 contributors_update
+upgrade_eslint9
 
 git add package.json
 git add "$CHANGELOG"
