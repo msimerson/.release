@@ -33,8 +33,8 @@ for (const s of ['lint', 'lint:fix']) {
 if (!process.env.SKIP_PRETTIER) {
   if (!pkg.prettier) {
     pkg.prettier = {
-      "singleQuote": true,
-      "semi": false
+      singleQuote: true,
+      semi: false,
     }
   }
 
