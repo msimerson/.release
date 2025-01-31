@@ -161,7 +161,7 @@ constrain_publish() {
         echo
         echo "   https://docs.npmjs.com/cli/v10/configuring-npm/package-json#files"
         echo
-        echo "HINT: files = [ 'CHANGELOG.md', 'config' ]"
+        echo 'HINT: "files": [ "CHANGELOG.md", "config" ],'
     fi
 
     # many modules have a .npmignore (one more file) to reduce/limit what
