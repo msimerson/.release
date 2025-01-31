@@ -162,6 +162,12 @@ constrain_publish() {
         echo "   https://docs.npmjs.com/cli/v10/configuring-npm/package-json#files"
         echo
         echo 'HINT: "files": [ "CHANGELOG.md", "config" ],'
+
+        local _main; _main=$(node -e 'console.log(require("./package.json").main)')
+        if [ "$_main" = "undefined" ]; then
+            echo "WARNING: package.json property 'main' is undefined. The default"
+            echo "         index.js is NOT automatically included in [files]."
+        fi
     fi
 
     # many modules have a .npmignore (one more file) to reduce/limit what
