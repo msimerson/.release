@@ -2,6 +2,11 @@
 
 ### Unreleased
 
+### 2.3.1 - 2025-04-29
+
+- finish: check if release is a draft before setting draft=false
+- finish: if there's a major version tag (v1, v2), update it
+
 ### 2.3.0 - 2025-01-26
 
 - added js/standards.cjs
