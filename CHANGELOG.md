@@ -2,6 +2,10 @@
 
 ### Unreleased
 
+### 2.3.2 - 2025-05-19
+
+- finish: only publish draft & bump maj version tag when PR merged
+
 ### 2.3.1 - 2025-04-29
 
 - finish: check if release is a draft before setting draft=false
