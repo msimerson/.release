@@ -1,6 +1,9 @@
 #!/bin/sh
 
-. .release/base.sh || exit
+set -eu
+
+# shellcheck source=./base.sh
+. .release/base.sh
 
 CURRENT_BRANCH=$(git branch --show-current)
 PKG_VERSION=$(node -e 'console.log(require("./package.json").version)')

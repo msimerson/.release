@@ -1,13 +1,14 @@
 #!/bin/sh
 
-set -e
+set -eu
 
 usage() {
     echo "start.sh { major | minor | patch | prerelease }"
     exit
 }
 
-. .release/base.sh || exit 1
+# shellcheck source=./base.sh
+. .release/base.sh
 
 find_new_version() {
     local _semver=${1:-""}
@@ -125,7 +126,7 @@ changelog_add_release_template() {
     if command -v open; then open "$CHANGELOG"; fi
 
     echo
-    echo "AFTER editing $CHANGELOG, run: .release/submit.sh"
+    echo "AFTER editing $CHANGELOG, run: sh .release/submit.sh"
 }
 
 changelog_check_tag_urls()
@@ -182,7 +183,7 @@ constrain_publish() {
 contributors_update() {
     # never mind, NPM site doesn't render it
     #if ! jq .files package.json | grep -q CONTRIBUTORS; then
-    #    jq '.files += ["CONTRIBUTORS.md"]' package.json > tmp || exit 1
+    #    jq '.files += ["CONTRIBUTORS.md"]' package.json > tmp
     #    mv tmp package.json
     #    git add package.json
     #    git commit -m 'add CONTRIBUTORS to [files] in package.json'
@@ -236,7 +237,7 @@ upgrade_eslint9() {
 self_update()
 {
     (
-        cd .release || exit
+        cd .release
 
         if [ "$(git branch --show-current)" != "main" ]; then
             git checkout main
@@ -246,6 +247,7 @@ self_update()
     )
 
     git add .release
+    # shellcheck source=./base.sh
     . .release/base.sh
 }
 

@@ -75,7 +75,7 @@ fs.writeFileSync(
   'CONTRIBUTORS.md',
   `# Contributors
 
-This handcrafted artisinal software is brought to you by:
+This handcrafted artisanal software is brought to you by:
 
 ${lines.join('\n')}
 

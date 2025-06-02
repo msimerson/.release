@@ -2,28 +2,28 @@
 
 get_yes_or_no()
 {
-    while true; do
-        printf "%s (y/n)? " "$1"
-        read -r -n 1 answer
-        echo
-        case "$answer" in
-            [Yy]) return 0 ;;
-            [Nn]) return 1 ;;
-            *) echo "Please answer y or n." ;;
-        esac
-    done
+    printf "%s (y/n)? " "$1"
+    old_stty_cfg=$(stty -g)
+    stty raw -echo
+    answer=$( while ! head -c 1 | grep -i '[nNyY]' ;do true ;done )
+    stty "$old_stty_cfg"
+    case "$answer" in
+        [Yy]) return 0 ;; # yes
+        *) return 1 ;; # no
+    esac
 }
 
 release_get_choice()
 {
-    trap "echo 'Breaking loop...'; exit" INT
+    trap "exit" INT
     while true; do
-        read -p 'Select option: ' n
-        for _i in $@; do
+        printf 'Select option: ' >&2
+        read -r n
+        for _i in "$@"; do
             if [ "$_i" = "$n" ]; then break 2; fi
         done
     done
-    printf "%s\n" $n
+    printf "%s\n" "$n"
 }
 
 get_main_branch()
@@ -73,6 +73,7 @@ assure_repo_is_clean()
 
 find_changelog()
 {
+    # shellcheck disable=SC2012
     CHANGELOG=$(ls [Cc][Hh][Aa]*.md 2>/dev/null | head -n 1)
     #echo "I found your CHANGELOG at: $CHANGELOG"
     if [ "$CHANGELOG" != "CHANGELOG.md" ]; then

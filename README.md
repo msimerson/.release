@@ -25,16 +25,7 @@ In newly checked out repos where .release exists, checkout the submodule with:
 git submodule update --init --recursive
 ```
 
-For each release, run 3 commands:
-
-```sh
-sh .release/start.sh [ major | minor | patch | prerelease ]
-# do local coding & commit changes
-sh .release/submit.sh
-# submit the changes, create PR, see if CI tests pass
-sh .release/finish.sh
-# cleanup
-```
+For each new release, run 3 commands: `sh .release/[start|submit|finish].sh`.
 
 ---
 
@@ -66,13 +57,13 @@ This will:
 - when defined in package.json[scripts]
   - run "format" (think: autopilot mode)
     - example: "format": "npm run prettier:fix && npm run lint:fix && git add . && git commit -m format",
-  - when format not defined, run `npm run format:check` && `npm run lint` (check only)
-- push the changes to origin/$branch
+  - when format is not defined, run `npm run format:check` && `npm run lint` (check only)
+- push the changes to origin/release-$VER
 - if `gh` is installed:
   - create a draft Pull Request
   - create a draft Release
 
-The body of the PR and the Release will be the commit messages in your repo since the most recent tag.
+The body of the PR and the Release will be the commit messages in your repo since the most recent tag. A best practice is to format these in the style recommended by [keepachangelog.com](https://keepachangelog.com/).
 
 ---
 

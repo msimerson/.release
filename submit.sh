@@ -1,6 +1,9 @@
 #!/bin/sh
 
-. .release/base.sh || exit 1
+set -eu
+
+# shellcheck source=./base.sh
+. .release/base.sh
 
 if branch_is_main; then
     echo "ERROR: run the push script in a feature branch! (not main)"
@@ -56,7 +59,7 @@ REPO_URL=$(gh repo view --json url -q ".url")
 GIT_NOTES=$(git log --pretty=format:"- %s%n%b" "$LAST_TAG..HEAD")
 GIT_URL_NOTES=$(git log --pretty=format:"- [%h]($REPO_URL/commit/%h) %s" "$LAST_TAG..HEAD")
 
-git push --set-upstream origin "$REL_BRANCH" || exit 1
+git push --set-upstream origin "$REL_BRANCH"
 
 if command -v gh; then
     gh pr create -d --title "Release v$PKG_VERSION" --body="$GIT_NOTES"
