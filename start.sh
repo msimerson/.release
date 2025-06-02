@@ -1,5 +1,7 @@
 #!/bin/sh
 
+set -e
+
 usage() {
     echo "start.sh { major | minor | patch | prerelease }"
     exit
@@ -29,9 +31,7 @@ find_new_version() {
             "minor" ) ;;
             "patch" ) ;;
             "prerelease" ) ;;
-            *)
-            usage
-            ;;
+            *) usage ;;
         esac
 
         NEW_VERSION=$(npm --no-git-tag-version version "$_semver")

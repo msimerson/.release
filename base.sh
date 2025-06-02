@@ -2,20 +2,21 @@
 
 get_yes_or_no()
 {
-    printf "%s (y/n)? " "$1"
-    old_stty_cfg=$(stty -g)
-    stty raw -echo
-    answer=$( while ! head -c 1 | grep -i '[ny]' ;do true ;done )
-    stty "$old_stty_cfg"
-    if [ "$answer" != "${answer#[Yy]}" ];then
-        return 0 # yes
-    else
-        return 1 # no
-    fi
+    while true; do
+        printf "%s (y/n)? " "$1"
+        read -r -n 1 answer
+        echo
+        case "$answer" in
+            [Yy]) return 0 ;;
+            [Nn]) return 1 ;;
+            *) echo "Please answer y or n." ;;
+        esac
+    done
 }
 
 release_get_choice()
 {
+    trap "echo 'Breaking loop...'; exit" INT
     while true; do
         read -p 'Select option: ' n
         for _i in $@; do
@@ -72,7 +73,7 @@ assure_repo_is_clean()
 
 find_changelog()
 {
-    CHANGELOG=$(ls [Cc][Hh][Aa]*.md)
+    CHANGELOG=$(ls [Cc][Hh][Aa]*.md 2>/dev/null | head -n 1)
     #echo "I found your CHANGELOG at: $CHANGELOG"
     if [ "$CHANGELOG" != "CHANGELOG.md" ]; then
         echo "REF: https://keepachangelog.com/"
@@ -83,8 +84,8 @@ find_changelog()
 
 file_has_changes()
 {
-    if git diff -s --exit-code "$1"; then
-        return 1
+    if git diff --quiet -- "$1"; then
+        return 1  # no changes
     fi
-    return 0
+    return 0      # has changes
 }

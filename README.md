@@ -28,11 +28,11 @@ git submodule update --init --recursive
 For each release, run 3 commands:
 
 ```sh
-.release/start.sh [ major | minor | patch | prerelease ]
+sh .release/start.sh [ major | minor | patch | prerelease ]
 # do local coding & commit changes
-.release/submit.sh
+sh .release/submit.sh
 # submit the changes, create PR, see if CI tests pass
-.release/finish.sh
+sh .release/finish.sh
 # cleanup
 ```
 
@@ -41,7 +41,7 @@ For each release, run 3 commands:
 ### Start a release
 
 ```sh
-.release/start.sh [ major | minor | patch | prerelease ]
+sh .release/start.sh [ major | minor | patch | prerelease ]
 ```
 
 This will:
@@ -55,10 +55,10 @@ This will:
 
 ### Submit your release
 
-After making all your changes, editing your CHANGELOG, and committing all your changes:
+After making all the changes, editing CHANGELOG, and committing the changes:
 
 ```sh
-.release/submit.sh
+sh .release/submit.sh
 ```
 
 This will:
@@ -81,7 +81,7 @@ The body of the PR and the Release will be the commit messages in your repo sinc
 After your PR is merged, finish it:
 
 ```sh
-.release/finish.sh
+sh .release/finish.sh
 ```
 
 This will:
