@@ -12,7 +12,10 @@ if (pkg.devDependencies['eslint-plugin-haraka']) {
   pkg.devDependencies['@haraka/eslint-config'] = '^2.0.2'
 }
 
-if (pkg.devDependencies['@haraka/eslint-config'] && pkg.devDependencies['@haraka/eslint-config'] !== '^2.0.2') {
+if (
+  pkg.devDependencies['@haraka/eslint-config'] &&
+  pkg.devDependencies['@haraka/eslint-config'] !== '^2.0.2'
+) {
   pkg.devDependencies['@haraka/eslint-config'] = '^2.0.2'
 }
 
