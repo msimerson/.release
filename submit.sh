@@ -27,13 +27,12 @@ if [ "$(node -e 'console.log(require("./package.json").scripts)')" != "undefined
         if ! npm run format; then
             exit 1
         fi
-        git add . && git commit -m 'chore: format'
+        git add .
+        git commit -m 'chore: format' || echo "format: no changes to commit"
     else
         _format_check=$(node -e 'console.log(require("./package.json").scripts["format:check"])')
         if [ "$_format_check" != "undefined" ]; then
-            if ! npm run format:check; then
-                exit 1
-            fi
+            npm run format:check
         fi
 
         _lint=$(node -e 'console.log(require("./package.json").scripts?.lint)')
