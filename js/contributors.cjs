@@ -31,6 +31,7 @@ if (contributorsRaw.stderr.length) {
 }
 
 const exclude = [
+  'Copilot',
   'greenkeeper',
   'greenkeeper[bot]',
   'synk',
