@@ -234,6 +234,23 @@ upgrade_eslint9() {
     node .release/js/standards.cjs
 }
 
+update_gh_workflows() {
+    _installed=".github/workflows/$1.yml"
+    _template="../.github/workflow-templates/$1.yml"
+
+    if [ ! -f "$_installed" ] && [ -f "$_template" ] && [ "$1" != "codeql" ]; then
+        cp $_template $_installed
+        return
+    fi
+
+    if [ -f "$_installed" ] && [ -f "$_template" ]; then
+        if ! diff -u "$_installed" "$_template"; then
+            echo "\nNOTICE: $_installed is not in sync with $_template"
+            echo "suggestion:\tcp $_template $_installed"
+        fi
+    fi
+}
+
 self_update()
 {
     (
@@ -273,6 +290,9 @@ changelog_check_tag_urls
 constrain_publish
 contributors_update
 upgrade_eslint9
+for _f in ci release publish; do
+    update_gh_workflows "$_f"
+done
 
 git add package.json
 git add "$CHANGELOG"
