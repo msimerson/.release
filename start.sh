@@ -237,6 +237,9 @@ upgrade_eslint9() {
 update_gh_workflows() {
     _installed=".github/workflows/$1.yml"
     _template="../.github/workflow-templates/$1.yml"
+    if [ ! -f $_template ] && [ -f "../../.github/workflow-templates/$1.yml" ]; then
+        _template="../../.github/workflow-templates/$1.yml"
+    fi
 
     if [ ! -f "$_installed" ] && [ -f "$_template" ] && [ "$1" != "codeql" ]; then
         cp $_template $_installed
