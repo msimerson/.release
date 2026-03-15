@@ -13,7 +13,7 @@ get_main_branch
 delete_remote_branch()
 {
     echo "deleting the remote branch"
-    git push origin ":$CURRENT_BRANCH"
+    git push origin ":$CURRENT_BRANCH" || echo "Delete failed, already deleted?"
     BRANCH_DEL="-D"
 }
 
@@ -50,7 +50,7 @@ if command -v gh; then
     fi
 
     if [ "$REL_IS_DRAFT" = "true" ]; then
-        echo "Publishing the v$PKG_VERSION to GH release"
+        echo "Publishing v$PKG_VERSION to GH release"
         gh release edit "v$PKG_VERSION" --draft=false
         update_major_version_tag
     fi
