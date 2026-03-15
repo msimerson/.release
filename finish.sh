@@ -31,8 +31,7 @@ update_major_version_tag()
     if [ -z "$PKG_VERSION" ]; then return; fi
 
     MAJOR=${PKG_VERSION%%.*}
-    SHORT=$(git tag -l | grep "^v${MAJOR}$")
-    if [ -z "$SHORT" ]; then return; fi
+    if ! git tag -l | grep -q "^v${MAJOR}$"; then return; fi
 
     git tag -d "v$MAJOR"
     git tag "v$MAJOR"
