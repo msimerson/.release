@@ -13,12 +13,20 @@ usage() {
 find_new_version() {
     local _semver=${1:-""}
 
+    if [ -f package.json ]; then
+        local _current_version
+        _current_version=$(node -e 'console.log(require("./package.json").version)')
+    fi
+
     if git branch --show-current | grep -q ^release;
     then
-        if [ -f package.json ]; then
-            NEW_VERSION=$(node -e 'console.log(require("./package.json").version)')
-        fi
+        NEW_VERSION="$_current_version"
     else
+        if [ -z "$_semver" ]; then
+            if printf '%s' "$_current_version" | grep -q -- '-'; then
+                _semver="prerelease"
+            fi
+        fi
 
         if [ -z "$_semver" ]; then
             set -- major minor patch prerelease
