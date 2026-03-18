@@ -60,69 +60,6 @@ write_template() {
 EO_CHANGE
 }
 
-add_commit_messages() {
-
-    if [ -z "$(git tag)" ]; then
-        _log_range="HEAD"
-    else
-        LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo '')
-        if [ -z "$LAST_TAG" ]; then
-            _log_range="HEAD"
-        else
-            _log_range="$LAST_TAG..HEAD"
-        fi
-    fi
-
-    # Categorize by conventional commit prefix; collect remainder as uncategorized
-    _added=""
-    _fixed=""
-    _changed=""
-    _other=""
-
-    while IFS= read -r _msg; do
-        [ -z "$_msg" ] && continue
-        case "$_msg" in
-            feat:*|feat\(*\):*)
-                _added="$_added\n- ${_msg#*: }"
-                ;;
-            fix:*|fix\(*\):*)
-                _fixed="$_fixed\n- ${_msg#*: }"
-                ;;
-            chore:*|chore\(*\):*|refactor:*|perf:*|style:*|docs:*|test:*|build:*|ci:*)
-                _changed="$_changed\n- ${_msg#*: }"
-                ;;
-            *)
-                _other="$_other\n- $_msg"
-                ;;
-        esac
-    done <<EOF
-$(git log --pretty=format:"%s" "$_log_range")
-EOF
-
-    # Append categorized sections, falling back to a flat list if nothing matched
-    if [ -z "$_added$_fixed$_changed" ]; then
-        git log --pretty=format:"- %s" "$_log_range" >> .release/new.txt
-        return
-    fi
-
-    if [ -n "$_added" ]; then
-        printf '\n#### Added\n' >> .release/new.txt
-        printf '%b\n' "$_added" >> .release/new.txt
-    fi
-    if [ -n "$_fixed" ]; then
-        printf '\n#### Fixed\n' >> .release/new.txt
-        printf '%b\n' "$_fixed" >> .release/new.txt
-    fi
-    if [ -n "$_changed" ]; then
-        printf '\n#### Changed\n' >> .release/new.txt
-        printf '%b\n' "$_changed" >> .release/new.txt
-    fi
-    if [ -n "$_other" ]; then
-        printf '\n#### Other\n' >> .release/new.txt
-        printf '%b\n' "$_other" >> .release/new.txt
-    fi
-}
-
 changelog_append_release_link() {
 
     if grep -q "^\[$NEW_VERSION\]:" "$CHANGELOG"; then

@@ -64,9 +64,12 @@ setup() {
 }
 
 @test "assure_repo_is_clean returns 0 on clean repo" {
-  git stash --include-untracked >/dev/null 2>&1
+  _stashed=0
+  if ! git diff --quiet || ! git diff --cached --quiet; then
+    git stash --include-untracked >/dev/null 2>&1 && _stashed=1
+  fi
   run bash -c '. ./base.sh; assure_repo_is_clean'
-  git stash pop >/dev/null 2>&1 || true
+  [ "$_stashed" -eq 1 ] && git stash pop >/dev/null 2>&1 || true
   [ "$status" -eq 0 ]
 }
 
