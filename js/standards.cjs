@@ -1,22 +1,21 @@
 #!node
 const fs = require('node:fs')
 
+const ESLINT_CONFIG_VERSION = '^2.0.4'
+
 const pkg = JSON.parse(fs.readFileSync('./package.json'))
-if (/8\./.test(pkg.devDependencies.eslint)) {
+if (/8\./.test(pkg?.devDependencies?.eslint)) {
   console.log(`DELETE eslint 8: ${pkg.devDependencies.eslint}`)
   delete pkg.devDependencies.eslint
 }
 
-if (pkg.devDependencies['eslint-plugin-haraka']) {
+if (pkg?.devDependencies['eslint-plugin-haraka']) {
   delete pkg.devDependencies['eslint-plugin-haraka']
-  pkg.devDependencies['@haraka/eslint-config'] = '^2.0.2'
+  pkg.devDependencies['@haraka/eslint-config'] = ESLINT_CONFIG_VERSION
 }
 
-if (
-  pkg.devDependencies['@haraka/eslint-config'] &&
-  pkg.devDependencies['@haraka/eslint-config'] !== '^2.0.2'
-) {
-  pkg.devDependencies['@haraka/eslint-config'] = '^2.0.2'
+if (pkg?.devDependencies['@haraka/eslint-config'] !== ESLINT_CONFIG_VERSION) {
+  pkg.devDependencies['@haraka/eslint-config'] = ESLINT_CONFIG_VERSION
 }
 
 if (/mocha/.test(pkg.scripts.test)) {
@@ -36,6 +35,7 @@ for (const s of ['lint', 'lint:fix']) {
 if (!process.env.SKIP_PRETTIER) {
   if (!pkg.prettier) {
     pkg.prettier = {
+      printWidth: 90,
       singleQuote: true,
       semi: false,
     }

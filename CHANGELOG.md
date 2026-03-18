@@ -2,6 +2,11 @@
 
 ### Unreleased
 
+- test: added more bats test coverage
+- use xdg-open if exists
+- moved bots list into ./js/bots.txt
+- chore: improved error handling in edge cases
+
 ### 2.3.2 - 2025-05-19
 
 - finish: only publish draft & bump maj version tag when PR merged

@@ -35,14 +35,13 @@ update_major_version_tag()
 
     git tag -d "v$MAJOR"
     git tag "v$MAJOR"
-    git push --force origin v1
+    git push --force origin v"$MAJOR"
 }
 
 if command -v gh; then
     PR_STATE=$(gh pr view "$CURRENT_BRANCH" | grep -i state | awk '{ print $2 }')
     REL_IS_DRAFT=$(gh release view "v$PKG_VERSION" --json isDraft --jq '.isDraft') \
-        || echo "no draft release for $PKG_VERSION"
-
+        || REL_IS_DRAFT=false
     if [ "$PR_STATE" != "MERGED" ]; then
         echo "WARNING: PR not merged, bailing out"
         exit 1

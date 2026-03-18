@@ -53,7 +53,7 @@ fi
 
 REL_BRANCH=$(git branch --show-current)
 PKG_VERSION=$(node -e 'console.log(require("./package.json").version)')
-LAST_TAG=$(git describe --tags --abbrev=0)
+LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo '')
 REPO_URL=$(gh repo view --json url -q ".url")
 GIT_NOTES=$(git log --pretty=format:"- %s%n%b" "$LAST_TAG..HEAD")
 GIT_URL_NOTES=$(git log --pretty=format:"- [%h]($REPO_URL/commit/%h) %s" "$LAST_TAG..HEAD")
@@ -65,6 +65,8 @@ if command -v gh; then
 
     if [ "$LAST_TAG" != "" ]; then
         # GitHub Actions requires the v prefix in the tag
-        gh release create "v$PKG_VERSION" --draft --target "$MAIN_BRANCH" --title "$PKG_VERSION" --notes "$GIT_URL_NOTES"
+        gh release create "v$PKG_VERSION" \
+          --draft --target "$MAIN_BRANCH" \
+          --title "$PKG_VERSION" --notes "$GIT_URL_NOTES"
     fi
 fi

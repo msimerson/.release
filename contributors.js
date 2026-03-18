@@ -1,1 +1,0 @@
-js/contributors.cjs

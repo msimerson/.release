@@ -4,6 +4,7 @@ get_yes_or_no()
 {
     printf "%s (y/n)? " "$1"
     old_stty_cfg=$(stty -g)
+    trap 'stty $old_stty_cfg; exit' INT TERM
     stty raw -echo
     answer=$( while ! head -c 1 | grep -i '[nNyY]' ;do true ;done )
     stty "$old_stty_cfg"
@@ -30,8 +31,13 @@ get_main_branch()
 {
     MAIN_BRANCH="main"
 
-    if [ -z "$(git branch -l main)" ]; then
+    if [ -z "$(git branch -l $MAIN_BRANCH)" ]; then
         MAIN_BRANCH="master"
+    fi
+
+    if [ -z "$(git branch -l $MAIN_BRANCH)" ]; then
+        # no local branch, probably new repo, try remote
+        MAIN_BRANCH=$(git remote show origin | grep 'HEAD branch' | awk '{print $NF}')
     fi
 
     export MAIN_BRANCH

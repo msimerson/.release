@@ -19,6 +19,7 @@ const repoInfo = repoInfoRaw.stdout.toString().trim()
 
 const contributorsRaw = child.spawnSync('gh', [
   'api',
+  '--paginate',
   '-H',
   'Accept: application/vnd.github+json',
   '-H',
@@ -30,18 +31,16 @@ if (contributorsRaw.stderr.length) {
   process.exit(1)
 }
 
-const exclude = [
-  'Copilot',
-  'greenkeeper',
-  'greenkeeper[bot]',
-  'synk',
-  'snyk-bot',
-  'dependabot',
-  'dependabot[bot]',
-  'lgtm-com',
-  'lgtm-com[bot]',
-  'lgtm-migrator',
-]
+const exclude = []
+
+const botsFile = require('node:path').join(__dirname, 'bots.txt')
+if (fs.existsSync(botsFile)) {
+  const extra = fs.readFileSync(botsFile, 'utf8')
+    .split('\n')
+    .map((l) => l.trim())
+    .filter((l) => l && !l.startsWith('#'))
+  exclude.push(...extra)
+}
 
 // list of contributors, minus the bots
 const contributors = JSON.parse(contributorsRaw.stdout.toString()).filter(
@@ -50,13 +49,13 @@ const contributors = JSON.parse(contributorsRaw.stdout.toString()).filter(
 
 // generate the GFM markdown table
 const columnsWide = contributors.length < 7 ? contributors.length : 7
-const blankRow = '| '.repeat(columnsWide) + '|'
+// const blankRow = '| '.repeat(columnsWide) + '|'
 const seperatorRow = '| :---: '.repeat(columnsWide) + '|'
 
 const lines = []
 let row = ``
 let count = 0
-for (contrib of contributors) {
+for (const contrib of contributors) {
   row += `| <img height="80" src="${contrib.avatar_url}"><br><a href="${contrib.html_url}">${contrib.login}</a> (<a href="https://github.com/${repoInfo}/commits?author=${contrib.login}">${contrib.contributions}</a>)`
   count++
   if (count % columnsWide === 0) {

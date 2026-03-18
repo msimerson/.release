@@ -11,7 +11,7 @@ usage() {
 . .release/base.sh
 
 find_new_version() {
-    local _semver=${1:-""}
+    local _semver="${1:-""}"
 
     if [ -f package.json ]; then
         local _current_version
@@ -31,8 +31,8 @@ find_new_version() {
         if [ -z "$_semver" ]; then
             set -- major minor patch prerelease
             printf 'Choose a semver release type: (https://semver.org)\n\n'
-            printf '\t%s\n' $@; echo
-            _semver=$(release_get_choice $@)
+            printf '\t%s\n' "$@"; echo
+            _semver=$(release_get_choice "$@")
         fi
 
         case "$_semver" in
@@ -44,7 +44,7 @@ find_new_version() {
         esac
 
         NEW_VERSION=$(npm --no-git-tag-version version "$_semver")
-        NEW_VERSION=${NEW_VERSION//v}
+        NEW_VERSION=${NEW_VERSION#v}
     fi
 
     if [ -z "$NEW_VERSION" ]; then
@@ -57,33 +57,69 @@ write_template() {
     cat > .release/new.txt <<EO_CHANGE
 
 ### [$NEW_VERSION] - $YMD
-
-#### Added
-
-- 
-
-#### Fixed
-
-- 
-
-#### Changed
-
-- 
 EO_CHANGE
 }
 
 add_commit_messages() {
 
-    # no tags (yet)
     if [ -z "$(git tag)" ]; then
-        git log --pretty=format:"- %s%n%b" >> .release/new.txt
+        _log_range="HEAD"
+    else
+        LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo '')
+        if [ -z "$LAST_TAG" ]; then
+            _log_range="HEAD"
+        else
+            _log_range="$LAST_TAG..HEAD"
+        fi
+    fi
+
+    # Categorize by conventional commit prefix; collect remainder as uncategorized
+    _added=""
+    _fixed=""
+    _changed=""
+    _other=""
+
+    while IFS= read -r _msg; do
+        [ -z "$_msg" ] && continue
+        case "$_msg" in
+            feat:*|feat\(*\):*)
+                _added="$_added\n- ${_msg#*: }"
+                ;;
+            fix:*|fix\(*\):*)
+                _fixed="$_fixed\n- ${_msg#*: }"
+                ;;
+            chore:*|chore\(*\):*|refactor:*|perf:*|style:*|docs:*|test:*|build:*|ci:*)
+                _changed="$_changed\n- ${_msg#*: }"
+                ;;
+            *)
+                _other="$_other\n- $_msg"
+                ;;
+        esac
+    done <<EOF
+$(git log --pretty=format:"%s" "$_log_range")
+EOF
+
+    # Append categorized sections, falling back to a flat list if nothing matched
+    if [ -z "$_added$_fixed$_changed" ]; then
+        git log --pretty=format:"- %s" "$_log_range" >> .release/new.txt
         return
     fi
 
-    LAST_TAG=$(git describe --tags --abbrev=0)
-    if [ "$LAST_TAG" != "" ]; then
-        # append log entries since the last tag (release)
-        git log --pretty=format:"- %s%n%b" "$LAST_TAG..HEAD" >> .release/new.txt
+    if [ -n "$_added" ]; then
+        printf '\n#### Added\n' >> .release/new.txt
+        printf '%b\n' "$_added" >> .release/new.txt
+    fi
+    if [ -n "$_fixed" ]; then
+        printf '\n#### Fixed\n' >> .release/new.txt
+        printf '%b\n' "$_fixed" >> .release/new.txt
+    fi
+    if [ -n "$_changed" ]; then
+        printf '\n#### Changed\n' >> .release/new.txt
+        printf '%b\n' "$_changed" >> .release/new.txt
+    fi
+    if [ -n "$_other" ]; then
+        printf '\n#### Other\n' >> .release/new.txt
+        printf '%b\n' "$_other" >> .release/new.txt
     fi
 }
 
@@ -99,8 +135,8 @@ changelog_append_release_link() {
     fi
 }
 
-changelog_add_header()
-{
+changelog_add_header() {
+
     if ! grep -qi '# Changelog' "$CHANGELOG"; then
         echo "inserting: # Changelog"
         sed -i '' \
@@ -131,20 +167,21 @@ changelog_add_release_template() {
     fi
 
     changelog_append_release_link
-    if command -v open; then open "$CHANGELOG"; fi
+    if   command -v open; then open "$CHANGELOG";
+    elif command -v xdg-open; then xdg-open "$CHANGELOG";
+    fi
 
     echo
     echo "AFTER editing $CHANGELOG, run: sh .release/submit.sh"
 }
 
-changelog_check_tag_urls()
-{
+changelog_check_tag_urls() {
     echo "checking tag URLs..."
     git fetch --tags
     local REPO_URL; REPO_URL="$(gh repo view --json url -q '.url')"
 
     for _tag in $(git tag); do
-        local _ver="${_tag//v}"
+        local _ver="${_tag#v}"
         local _ver_uri="[$_ver]: $REPO_URL/releases/tag/$_tag"
 
         if ! grep -Fq "$_ver_uri" "$CHANGELOG"; then
@@ -245,25 +282,24 @@ upgrade_eslint9() {
 update_gh_workflows() {
     _installed=".github/workflows/$1.yml"
     _template="../.github/workflow-templates/$1.yml"
-    if [ ! -f $_template ] && [ -f "../../.github/workflow-templates/$1.yml" ]; then
+    if [ ! -f "$_template" ] && [ -f "../../.github/workflow-templates/$1.yml" ]; then
         _template="../../.github/workflow-templates/$1.yml"
     fi
 
     if [ ! -f "$_installed" ] && [ -f "$_template" ] && [ "$1" != "codeql" ]; then
-        cp $_template $_installed
+        cp "$_template" "$_installed"
         return
     fi
 
     if [ -f "$_installed" ] && [ -f "$_template" ]; then
         if ! diff -u "$_installed" "$_template"; then
-            echo "\nNOTICE: $_installed is not in sync with $_template"
-            echo "suggestion:\tcp $_template $_installed"
+            printf "\nNOTICE: %s is not in sync with %s\n" "$_installed" "$_template"
+            printf "suggestion:\tcp %s %s\n" "$_template" "$_installed"
         fi
     fi
 }
 
-self_update()
-{
+self_update() {
     (
         cd .release
 
