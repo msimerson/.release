@@ -4,6 +4,7 @@ const fs = require('node:fs')
 const ESLINT_CONFIG_VERSION = '^2.0.4'
 
 const pkg = JSON.parse(fs.readFileSync('./package.json'))
+
 if (/8\./.test(pkg?.devDependencies?.eslint)) {
   console.log(`DELETE eslint 8: ${pkg.devDependencies.eslint}`)
   delete pkg.devDependencies.eslint
@@ -17,6 +18,8 @@ if (pkg?.devDependencies['eslint-plugin-haraka']) {
 if (pkg?.devDependencies['@haraka/eslint-config'] !== ESLINT_CONFIG_VERSION) {
   pkg.devDependencies['@haraka/eslint-config'] = ESLINT_CONFIG_VERSION
 }
+
+if (pkg.scripts === undefined) pkg.scripts = {}
 
 if (/mocha/.test(pkg.scripts.test)) {
   if (/\^10/.test(pkg.scripts.test)) {
@@ -54,12 +57,12 @@ if (!process.env.SKIP_PRETTIER) {
   }
 }
 
-if (!pkg.scripts.versions) {
-  pkg.scripts.versions = 'npx dependency-version-checker check'
+if (pkg.scripts?.versions !== 'npx npm-dep-mgr check') {
+  pkg.scripts.versions = 'npx npm-dep-mgr check'
 }
 
-if (!pkg.scripts['versions:fix']) {
-  pkg.scripts['versions:fix'] = 'npx dependency-version-checker update'
+if (pkg.scripts['versions:fix'] !== 'npx npm-dep-mgr update') {
+  pkg.scripts['versions:fix'] = 'npx npm-dep-mgr update'
 }
 
 fs.writeFileSync('package.json', JSON.stringify(pkg, null, 2))

@@ -2,6 +2,7 @@
 
 ### Unreleased
 
+- fix: replaced dependency-version-checker with npm-dep-mgr
 - eslint: only check deprecated names if .eslintrc.* exists
 - prettier: configure ignore in ../.prettierignore
 - test: added more bats test coverage

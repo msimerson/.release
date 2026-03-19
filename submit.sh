@@ -59,6 +59,11 @@ if [ "$(node -e 'console.log(require("./package.json").scripts)')" != "undefined
             fi
         fi
     fi
+
+    # _versions=$(node -e 'console.log(require("./package.json").scripts["versions:fix"])')
+    # if [ "$_versions" != "undefined" ]; then
+    #     npm run versions:fix && git add package.json && git commit -m "fix: update dependency versions"
+    # fi
 fi
 
 REL_BRANCH=$(git branch --show-current)

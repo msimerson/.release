@@ -44,6 +44,8 @@ find_new_version() {
         esac
 
         NEW_VERSION=$(npm --no-git-tag-version version "$_semver")
+        git add package.json
+        git commit -m "chore(release): $NEW_VERSION"
         NEW_VERSION=${NEW_VERSION#v}
     fi
 
@@ -69,6 +71,8 @@ changelog_append_release_link() {
         # release URL to the bottom of the file.
         REPO_URL=$(gh repo view --json url -q ".url")
         echo "[$NEW_VERSION]: $REPO_URL/releases/tag/v$NEW_VERSION" >> "$CHANGELOG"
+        git add "$CHANGELOG"
+        git commit -m "doc(CHANGELOG): add commit messages for $NEW_VERSION"
     fi
 }
 
@@ -236,6 +240,12 @@ update_gh_workflows() {
     fi
 }
 
+check_dep_versions() {
+    if grep -qs npm-dep-mgr package.json; then
+        npm run versions
+    fi
+}
+
 self_update() {
     (
         cd .release
@@ -274,9 +284,7 @@ changelog_check_tag_urls
 constrain_publish
 contributors_update
 upgrade_eslint9
+check_dep_versions
 for _f in ci release publish; do
     update_gh_workflows "$_f"
 done
-
-git add package.json
-git add "$CHANGELOG"
