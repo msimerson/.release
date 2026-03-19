@@ -27,6 +27,11 @@ if (/mocha/.test(pkg.scripts.test)) {
   }
 }
 
+if (!pkg.scripts['test:coverage']) {
+  pkg.scripts['test:coverage'] =
+    'npx c8 --reporter=text --reporter=text-summary npm test'
+}
+
 for (const s of ['lint', 'lint:fix']) {
   if (/eslint/.test(pkg.scripts[s])) {
     if (/\^8/.test(pkg.scripts[s])) {

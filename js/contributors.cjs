@@ -35,7 +35,8 @@ const exclude = []
 
 const botsFile = require('node:path').join(__dirname, 'bots.txt')
 if (fs.existsSync(botsFile)) {
-  const extra = fs.readFileSync(botsFile, 'utf8')
+  const extra = fs
+    .readFileSync(botsFile, 'utf8')
     .split('\n')
     .map((l) => l.trim())
     .filter((l) => l && !l.startsWith('#'))
