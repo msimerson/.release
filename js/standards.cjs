@@ -15,8 +15,10 @@ if (pkg?.devDependencies['eslint-plugin-haraka']) {
   pkg.devDependencies['@haraka/eslint-config'] = ESLINT_CONFIG_VERSION
 }
 
-if (pkg?.devDependencies['@haraka/eslint-config'] !== ESLINT_CONFIG_VERSION) {
-  pkg.devDependencies['@haraka/eslint-config'] = ESLINT_CONFIG_VERSION
+if (pkg.name?.includes("haraka")) {
+  if (pkg?.devDependencies['@haraka/eslint-config'] !== ESLINT_CONFIG_VERSION) {
+    pkg.devDependencies['@haraka/eslint-config'] = ESLINT_CONFIG_VERSION
+  }
 }
 
 if (pkg.scripts === undefined) pkg.scripts = {}
