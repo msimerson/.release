@@ -12,11 +12,17 @@ fi
 
 assure_repo_is_clean || exit 1
 
-# Ensure .prettierignore contains .release/
-if [ ! -f .prettierignore ] || ! grep -qxF '.release/' .prettierignore; then
-    echo ".release/" >> .prettierignore
-    git add .prettierignore
-    git commit -m "chore: add .release/ to .prettierignore" || true
+# tell prettier to ignore .release
+if [ grep prettier package.json | grep -q ignore ]; then
+    if [ ! grep -qxF '.release' .gitignore ]; then
+        echo ".release/" >> .gitignore
+    fi
+else
+    if [ ! -f .prettierignore ] || ! grep -qxF '.release/' .prettierignore; then
+        echo ".release/" >> .prettierignore
+        git add .prettierignore
+        git commit -m "chore: add .release/ to .prettierignore" || true
+    fi
 fi
 
 if ls .eslintrc.* 1>/dev/null 2>&1; then
