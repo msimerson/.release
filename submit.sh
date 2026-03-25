@@ -14,7 +14,7 @@ assure_repo_is_clean || exit 1
 
 # tell prettier to ignore .release
 if grep prettier package.json | grep -q ignore; then
-    if [ ! grep -qxF '.release' .gitignore ]; then
+    if ! grep -qxF '.release' .gitignore; then
         echo ".release/" >> .gitignore
     fi
 else
