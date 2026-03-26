@@ -45,7 +45,6 @@ find_new_version() {
 
         NEW_VERSION=$(npm --no-git-tag-version version "$_semver")
         git add package.json
-        git commit -m "chore(release): $NEW_VERSION"
         NEW_VERSION=${NEW_VERSION#v}
     fi
 
