@@ -13,5 +13,6 @@ if (checkExistsRe.test(pkg.name)) {
   console.error(`already scoped to ${scope}`)
   process.exit(0)
 }
+if (pkg.name === 'Haraka') pkg.name = 'haraka' // lc for GHPM
 pkg.name = `${scope}/${pkg.name}`
 fs.writeFileSync('package.json', JSON.stringify(pkg, null, 2))
