@@ -10,20 +10,20 @@ if (/8\./.test(pkg?.devDependencies?.eslint)) {
   delete pkg.devDependencies.eslint
 }
 
-if (pkg?.devDependencies['eslint-plugin-haraka']) {
+if (pkg?.devDependencies?.['eslint-plugin-haraka']) {
   delete pkg.devDependencies['eslint-plugin-haraka']
   pkg.devDependencies['@haraka/eslint-config'] = ESLINT_CONFIG_VERSION
 }
 
 if (pkg.name?.includes('haraka')) {
-  if (pkg?.devDependencies['@haraka/eslint-config'] !== ESLINT_CONFIG_VERSION) {
+  if (pkg?.devDependencies?.['@haraka/eslint-config'] !== ESLINT_CONFIG_VERSION) {
     pkg.devDependencies['@haraka/eslint-config'] = ESLINT_CONFIG_VERSION
   }
 }
 
 if (pkg.scripts === undefined) pkg.scripts = {}
 
-if (/mocha/.test(pkg.scripts.test)) {
+if (/mocha/.test(pkg.scripts?.test)) {
   if (/\^10/.test(pkg.scripts.test)) {
     pkg.scripts.test = pkg.scripts.test.replace('10', '11')
   }
