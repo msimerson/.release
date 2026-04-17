@@ -31,21 +31,19 @@ if (contributorsRaw.stderr.length) {
   process.exit(1)
 }
 
-const exclude = []
-
-const botsFile = require('node:path').join(__dirname, 'bots.txt')
-if (fs.existsSync(botsFile)) {
-  const extra = fs
-    .readFileSync(botsFile, 'utf8')
-    .split('\n')
-    .map((l) => l.trim())
-    .filter((l) => l && !l.startsWith('#'))
-  exclude.push(...extra)
-}
+const exclude = [
+  /^copilot-/i,
+  /^dependabot/i,
+  /^greenkeeper/i,
+  /^lgtm-/i,
+  /^snyk/i,
+  /\[bot\]$/i,
+  /-bot$/i,
+]
 
 // list of contributors, minus the bots
 const contributors = JSON.parse(contributorsRaw.stdout.toString()).filter(
-  (c) => !exclude.includes(c.login),
+  (c) => !exclude.some((re) => re.test(c.login)),
 )
 
 // generate the GFM markdown table
