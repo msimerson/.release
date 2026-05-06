@@ -48,27 +48,25 @@ const contributors = JSON.parse(contributorsRaw.stdout.toString()).filter(
 
 // generate the GFM markdown table
 const columnsWide = contributors.length < 7 ? contributors.length : 7
-// const blankRow = '| '.repeat(columnsWide) + '|'
-const seperatorRow = '| :---: '.repeat(columnsWide) + '|'
+const separatorRow = '| :---: '.repeat(columnsWide) + '|'
 
 const lines = []
-let row = ``
+let row = ''
 let count = 0
 for (const contrib of contributors) {
-  row += `| <img height="80" src="${contrib.avatar_url}"><br><a href="${contrib.html_url}">${contrib.login}</a> (<a href="https://github.com/${repoInfo}/commits?author=${contrib.login}">${contrib.contributions}</a>)`
+  row += `| <img height="80" src="${contrib.avatar_url}"><br><a href="${contrib.html_url}">${contrib.login}</a> (<a href="https://github.com/${repoInfo}/commits?author=${contrib.login}">${contrib.contributions}</a>) `
   count++
   if (count % columnsWide === 0) {
-    row += `|`
-    lines.push(row)
-    if (lines.length === 1) lines.push(seperatorRow)
-    row = ``
+    lines.push(row + '|')
+    if (lines.length === 1) lines.push(separatorRow)
+    row = ''
   }
 }
-if (lines.length < 1) {
-  lines.push(row + `|`, seperatorRow)
-  row = ''
+// Pad the partial last row with empty cells and close it
+if (row) {
+  const filled = count % columnsWide
+  lines.push(row + '| '.repeat(columnsWide - filled) + '|')
 }
-if (row !== '') lines.push(row)
 
 fs.writeFileSync(
   'CONTRIBUTORS.md',
