@@ -32,7 +32,7 @@ if (contributorsRaw.stderr.length) {
 }
 
 const exclude = [
-  /^copilot-/i,
+  /^copilot/i,
   /^dependabot/i,
   /^greenkeeper/i,
   /^lgtm-/i,
