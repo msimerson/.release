@@ -234,7 +234,8 @@ update_gh_workflows() {
     if [ -f "$_installed" ] && [ -f "$_template" ]; then
         if ! diff -u "$_installed" "$_template"; then
             printf "\n\nNOTICE: %s is not in sync with %s\n" "$_installed" "$_template"
-            printf "suggestion:\tcp %s %s\n" "$_template" "$_installed\n"
+            printf "suggestion:\tcp %s %s\n" "$_template" "$_installed"
+            echo
         fi
     fi
 }
