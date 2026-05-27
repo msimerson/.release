@@ -2,6 +2,9 @@
 
 set -eu
 
+# Absolute path captured before any cd so self_update can exec the new copy.
+SELF_PATH="$(cd "$(dirname "$0")" && pwd)/$(basename "$0")"
+
 usage() {
     echo "start.sh { major | minor | patch | prerelease }"
     exit
@@ -166,13 +169,7 @@ constrain_publish() {
 }
 
 contributors_update() {
-    # never mind, NPM site doesn't render it
-    #if ! jq .files package.json | grep -q CONTRIBUTORS; then
-    #    jq '.files += ["CONTRIBUTORS.md"]' package.json > tmp
-    #    mv tmp package.json
-    #    git add package.json
-    #    git commit -m 'add CONTRIBUTORS to [files] in package.json'
-    #fi
+    # reminder: NPM site doesn't render it as markdown
 
     if [ ! -f CONTRIBUTORS.md ]; then
         node .release/js/contributors.cjs
@@ -219,6 +216,22 @@ upgrade_eslint9() {
     node .release/js/standards.cjs
 }
 
+upgrade_eslint10() {
+    if ! git remote -v | grep -q 'github.com[:/]haraka'; then
+        echo "skipping eslint v10 upgrade, not on haraka repo"
+        return
+    fi
+
+    local _major
+    _major=$(jq -r '.devDependencies["@haraka/eslint-config"] // "" | sub("^[~^]"; "") | split(".")[0]' package.json)
+    if [ "$_major" != "2" ]; then return; fi
+
+    npm install --save-dev @haraka/eslint-config@^3
+    printf "import haraka from '@haraka/eslint-config'\nexport default [...haraka]\n" > eslint.config.mjs
+    git add eslint.config.mjs package.json
+    git commit -m 'dep(eslint): upgrade to v10'
+}
+
 update_gh_workflows() {
     _installed=".github/workflows/$1.yml"
     _template="../.github/workflow-templates/$1.yml"
@@ -247,6 +260,16 @@ check_dep_versions() {
 }
 
 self_update() {
+    # Guard: if we already re-exec'd this invocation, just re-source base.sh.
+    if [ "${SELF_UPDATED:-}" = "1" ]; then
+        # shellcheck source=./base.sh
+        . .release/base.sh
+        return
+    fi
+
+    local _old_head _new_head
+    _old_head=$(git -C .release rev-parse HEAD 2>/dev/null || true)
+
     (
         cd .release
 
@@ -257,12 +280,20 @@ self_update() {
         git pull origin main -q
     )
 
+    _new_head=$(git -C .release rev-parse HEAD 2>/dev/null || true)
     git add .release
+
+    # If .release advanced, re-exec the (now-updated) script.
+    if [ -n "$_new_head" ] && [ "$_old_head" != "$_new_head" ]; then
+        export SELF_UPDATED=1
+        exec "$SELF_PATH" "$@"
+    fi
+
     # shellcheck source=./base.sh
     . .release/base.sh
 }
 
-self_update
+self_update "$@"
 
 find_new_version "$@"
 
@@ -284,6 +315,7 @@ changelog_check_tag_urls
 constrain_publish
 contributors_update
 upgrade_eslint9
+upgrade_eslint10
 check_dep_versions
 for _f in ci release publish; do
     update_gh_workflows "$_f"
