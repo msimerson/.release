@@ -173,6 +173,7 @@ contributors_update() {
 
     if [ ! -f CONTRIBUTORS.md ]; then
         node .release/js/contributors.cjs
+	npx prettier CONTRIBUTORS.md --write
         git add CONTRIBUTORS.md
         git commit -m 'doc(CONTRIBUTORS): added'
         return
