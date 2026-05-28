@@ -73,6 +73,7 @@ changelog_append_release_link() {
         # release URL to the bottom of the file.
         REPO_URL=$(gh repo view --json url -q ".url")
         echo "[$NEW_VERSION]: $REPO_URL/releases/tag/v$NEW_VERSION" >> "$CHANGELOG"
+        npx prettier "$CHANGELOG" --write
         git add "$CHANGELOG"
         git commit -m "doc(CHANGELOG): add commit messages for $NEW_VERSION"
     fi
@@ -173,7 +174,7 @@ contributors_update() {
 
     if [ ! -f CONTRIBUTORS.md ]; then
         node .release/js/contributors.cjs
-	npx prettier CONTRIBUTORS.md --write
+        npx prettier CONTRIBUTORS.md --write
         git add CONTRIBUTORS.md
         git commit -m 'doc(CONTRIBUTORS): added'
         return
