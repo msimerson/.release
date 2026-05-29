@@ -183,6 +183,7 @@ contributors_update() {
     node .release/js/contributors.cjs
 
     if file_has_changes CONTRIBUTORS.md; then
+        npx prettier CONTRIBUTORS.md --write
         git add CONTRIBUTORS.md
         git commit -m 'doc(CONTRIBUTORS): updated'
     fi
