@@ -46,9 +46,9 @@ find_new_version() {
             *) usage ;;
         esac
 
-        NEW_VERSION=$(npm --no-git-tag-version version "$_semver")
+        npm --no-git-tag-version version "$_semver" > /dev/null
         git add package.json
-        NEW_VERSION=${NEW_VERSION#v}
+        NEW_VERSION=$(node -e 'console.log(require("./package.json").version)')
     fi
 
     if [ -z "$NEW_VERSION" ]; then
