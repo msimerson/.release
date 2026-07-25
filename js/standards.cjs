@@ -29,11 +29,14 @@ if (pkg.name?.includes('haraka')) {
 
 if (pkg.scripts === undefined) pkg.scripts = {}
 
-if (/mocha/.test(pkg.scripts?.test)) {
-  if (/\^10/.test(pkg.scripts.test)) {
-    pkg.scripts.test = pkg.scripts.test.replace('10', '11')
-  }
+// bump a major pinned in a script: `npx mocha@^10 …` -> `npx mocha@^11 …`.
+function bumpScriptPin(scripts, name, tool, fromMajor, toMajor) {
+  if (typeof scripts[name] !== 'string') return
+  const pin = new RegExp(`(${tool}@\\^)${fromMajor}(?![0-9])[\\w.-]*`, 'g')
+  scripts[name] = scripts[name].replace(pin, `$1${toMajor}`)
 }
+
+bumpScriptPin(pkg.scripts, 'test', 'mocha', 10, 11)
 
 if (!pkg.scripts['test:coverage']) {
   pkg.scripts['test:coverage'] =
@@ -41,11 +44,7 @@ if (!pkg.scripts['test:coverage']) {
 }
 
 for (const s of ['lint', 'lint:fix']) {
-  if (/eslint/.test(pkg.scripts[s])) {
-    if (/\^8/.test(pkg.scripts[s])) {
-      pkg.scripts[s] = pkg.scripts[s].replace('8', '9')
-    }
-  }
+  bumpScriptPin(pkg.scripts, s, 'eslint', 8, 9)
 }
 
 if (!process.env.SKIP_PRETTIER) {
