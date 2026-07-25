@@ -5,7 +5,13 @@ const ESLINT_CONFIG_VERSION = '^2.0.4'
 
 const pkg = JSON.parse(fs.readFileSync('./package.json'))
 
-if (/8\./.test(pkg?.devDependencies?.eslint)) {
+// the major of a semver range: ^8.57.0 -> 8, >=10.8.0 -> 10
+function majorVersion(range) {
+  const match = /^\D*(\d+)\./.exec(range ?? '')
+  return match ? Number(match[1]) : null
+}
+
+if (majorVersion(pkg?.devDependencies?.eslint) === 8) {
   console.log(`DELETE eslint 8: ${pkg.devDependencies.eslint}`)
   delete pkg.devDependencies.eslint
 }
